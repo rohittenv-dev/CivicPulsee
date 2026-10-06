@@ -1,146 +1,156 @@
 # CivicPulse
 
-**Civic issue reporting and accountability platform for municipal authorities.**
-Configured in this repository for the **Brihanmumbai Municipal Corporation (BMC), Mumbai** —
-but the authority, city, departments and SLA are one config file away from any other city.
+**Civic issue reporting, tracking, and resolution monitoring platform.**
 
-A resident photographs a pothole, drops a pin, and gets a tracking ID in under a minute.
-The complaint then moves through a visible lifecycle — **Reported → Assigned → In Progress →
-Resolved → Confirmed** (or **Reopened**) — where every transition is written to a
-tamper-evident, SHA-256 hash-chained audit log that anyone can read.
+Configured in this repository for the **Brihanmumbai Municipal Corporation (BMC), Mumbai** — CivicPulse empowers citizens to report civic complaints in under a minute, track their resolution lifecycle, and inspect real-time municipal performance transparency.
 
 ---
 
-## What's inside
+## Repository
 
-| Route | Who it's for | What it does |
+- **GitHub Repository**: [https://github.com/rohittenv-dev/CivicPulsee.git](https://github.com/rohittenv-dev/CivicPulsee.git)
+
+---
+
+## Application Overview & Routes
+
+| Route | Audience | Key Capabilities |
 | --- | --- | --- |
-| `/` | everyone | Landing page, lifecycle explainer |
-| `/report` | citizens (sign-in required) | File a complaint: category, photo, location (GPS / typed address / map pin), duplicate detection |
-| `/track` | everyone | Browse every complaint; narrow by tracking ID, title, location or category; read the hash chain |
-| `/map` | everyone | Live Leaflet/OpenStreetMap map of the city, pins colour-coded by status |
-| `/transparency` | everyone | Aggregate city performance: backlog, median resolution, SLA compliance, hotspots, department table |
-| `/official` | municipal staff only | Department-scoped work queue: assign → start work → resolve with proof photo |
-
-Design details, the viva-voce question bank and a walkthrough of how everything fits together
-live in [`public/EXPLANATION.md`](public/EXPLANATION.md).
+| `/` | Public | Landing page & platform overview |
+| `/report` | Citizens (Sign-in required) | File a civic complaint: select category, description, upload photo, drop map pin / set GPS / type address |
+| `/track` | Public | Search & track complaints by Tracking ID, title, category, or status; view audit event log |
+| `/map` | Public | Interactive Leaflet + OpenStreetMap civic map with real-time Supabase issue markers, search, filtering, and Locate Me |
+| `/transparency` | Public | Live analytics & charts derived from real Supabase data: resolution rates, department stats, SLA performance |
+| `/official` | Municipal Staff | Official dashboard: department work queue, assign staff, update progress, and resolve issues with proof photo & resolution notes |
 
 ---
 
-## Tech stack
+## Main Features
 
-- **React 19** + **TanStack Start** (file-based routing, SSR, server functions) on **Vite 7**
-- **Tailwind CSS v4** (CSS-first config in `src/styles.css`) + shadcn/ui, dark mode by default
-- **Supabase** — Postgres, Row Level Security, Storage (`issue-photos` bucket)
-- **Leaflet / react-leaflet** with CARTO OSM tiles for maps
-- **OpenStreetMap Nominatim** for address search and reverse geocoding (no API key)
+### 1. Citizen Authentication
+- Indian mobile number sign-in (`+91` format).
+- Serves as ownership identification for filing and managing complaints.
+
+### 2. Municipal Official Authentication
+- Employee code authentication from the authority register (e.g. `BMC-EMP-8842`).
+- Provides role-based access to the official department work queue.
+
+### 3. Issue Reporting
+- File complaints across categories (Roads & Potholes, Water Supply, Garbage & Waste, Street Lighting, Drainage, etc.).
+- Photo upload integrated with Supabase Storage.
+- Precise location tagging using browser GPS, address search (OpenStreetMap Nominatim), or interactive map pin.
+
+### 4. Issue Tracking & Audit Log
+- Unique tracking ID generated for every issue.
+- Public search and filtering by status (`Reported`, `Assigned`, `In Progress`, `Resolved`, `Confirmed`).
+- Event audit log tracking lifecycle changes.
+
+### 5. Official Dashboard
+- Department-scoped work queue for municipal staff.
+- Update issue status from reported to assigned, in-progress, or resolved.
+- Attach resolution notes and required "after" proof photo upon resolving an issue.
+
+### 6. Interactive Civic Issue Map (`/map`)
+- Built with **Leaflet** and **OpenStreetMap** tile layer.
+- Displays real issue data fetched from **Supabase**.
+- Marker clustering using `react-leaflet-cluster` for high-density areas.
+- **Search & Filtering**: Filter markers instantly by category or status, or search by title/location.
+- **Locate Me**: One-click geolocation centering the map on the user's location with a distinct, animated blue marker.
+- **Resolved Issue Green Marker**: Issues with status `Resolved` or `Confirmed` display a distinct green marker on the map.
+- **Rich Popup Details**: Clicking any marker shows issue details, status badge, category, address, date, original report photo (Before), and for resolved issues, the official resolution proof photo (After) alongside resolution notes.
+
+### 7. Issue Resolution & Proof Verification
+- Municipal officials submit resolution notes and an "After" proof photo when completing work.
+- Visually distinguished on the map via green markers (`customGreenIcon`).
+- Complete transparency with side-by-side Before / After photo verification in issue details.
+
+### 8. Transparency & Analytics Dashboard (`/transparency`)
+- All metrics and charts are dynamically derived from real Supabase issue data.
+- Key performance indicators: Total Issues Reported, Resolution Rate %, SLA Compliance %, Average Resolution Time.
+- Dynamic data visualizations using Recharts (Category Breakdown, Status Distribution, Department Performance).
+
+### 9. Responsive UI & Dark Theme
+- Modern design built with Tailwind CSS v4 and Radix UI / shadcn/ui components.
+- Responsive layout optimized for mobile and desktop screens.
 
 ---
 
-## Run it yourself
+## Technology Stack
 
-### 1. Clone and install
+CivicPulse is built using modern web technologies:
 
-```sh
-git clone <this-repository-url>
-cd civicpulse
-npm install        # or bun install
+- **Frontend Framework**: [React 19](https://react.dev/) + [TanStack Start](https://tanstack.com/start) / [TanStack Router](https://tanstack.com/router)
+- **Build Tool**: [Vite 8](https://vitejs.dev/)
+- **Styling**: [Tailwind CSS v4](https://tailwindcss.com/) with CSS-first configuration (`src/styles.css`), Radix UI primitives, Lucide React icons
+- **Map & Geolocation**: [Leaflet](https://leafletjs.com/), [React Leaflet v5](https://react-leaflet.js.org/), [react-leaflet-cluster](https://github.com/akshinly/react-leaflet-cluster), OpenStreetMap Nominatim for address search
+- **Charts & Data Visualization**: [Recharts](https://recharts.org/)
+- **Backend & Database**: [Supabase](https://supabase.com/) (`@supabase/supabase-js`)
+  - PostgreSQL Database
+  - Row Level Security (RLS) policies
+  - Supabase Storage (`issue-photos` bucket)
+- **Forms & Validation**: React Hook Form (`react-hook-form`), Zod (`zod`)
+
+---
+
+## Environment Variables
+
+The application relies on Supabase configuration for data and storage access. 
+
+Only public/publishable client configuration variable names are required:
+
+```env
+VITE_SUPABASE_URL="https://<your-supabase-project>.supabase.co"
+VITE_SUPABASE_PUBLISHABLE_KEY="<your-supabase-anon-key>"
 ```
 
-### 2. Create your own Supabase project
+> [!IMPORTANT]
+> Secret files and secret keys (such as service-role keys or passwords) must never be committed to GitHub.
 
-1. Sign up at [supabase.com](https://supabase.com) and create a new project (free tier is enough).
-2. Open **SQL Editor → New query**, paste the entire contents of
-   `supabase/migrations/20260805000000_civicpulse_schema.sql`, and run it.
-   That single file creates every table (`profiles`, `user_roles`, `departments`, `issues`,
-   `issue_events`, `issue_supporters`), the enums, the grants, the RLS policies, the
-   `issue-photos` storage bucket, and the demo seed rows.
-3. Go to **Project Settings → API** and copy the **Project URL** and the **anon / publishable key**.
+---
 
-### 3. Point the app at it
+## Local Development
 
-Copy `.env.example` to `.env` and fill in your values:
+### 1. Prerequisites
+- Node.js (v18+ recommended)
+- npm or bun
 
+### 2. Installation
 ```sh
-VITE_SUPABASE_URL="https://<your-project-ref>.supabase.co"
+npm install
+```
+
+### 3. Setup Environment
+Copy `.env.example` to `.env.local` and configure your Supabase URL and Publishable Key:
+```sh
+VITE_SUPABASE_URL="https://<your-project>.supabase.co"
 VITE_SUPABASE_PUBLISHABLE_KEY="<your-anon-key>"
-VITE_SUPABASE_PROJECT_ID="<your-project-ref>"
-SUPABASE_URL="https://<your-project-ref>.supabase.co"
-SUPABASE_PUBLISHABLE_KEY="<your-anon-key>"
-SUPABASE_PROJECT_ID="<your-project-ref>"
 ```
 
-### 4. Start it
-
+### 4. Run Development Server
 ```sh
-npm run dev      # http://localhost:8080
-npm run build    # production build
+npm run dev
 ```
+Open `http://localhost:8080` in your browser.
 
-That's it — schema + `.env` and the app is ready to go.
-
-### 5. Sign in
-
-- **Citizen:** any valid 10-digit Indian mobile number (`+91` is fixed, first digit 6-9).
-  The number is the ownership key: only it can later confirm or reopen that complaint.
-- **Municipal official:** an employee code from the authority register in
-  `src/config/officials.ts` plus its PIN. Demo: `BMC-EMP-8842` / PIN `8842`.
-  A role can never be self-declared — the code must exist on the register.
-
----
-
-## Rebranding for another city
-
-Edit **`src/config/authority.ts`** only:
-
-```ts
-city: "Mumbai",
-authorityName: "Brihanmumbai Municipal Corporation",
-authorityShortName: "BMC",
-slaDays: 14,
-trackingPrefix: "CP",
-centre: { lat: 19.076, lng: 72.8777 },   // map centre
-```
-
-Departments and issue categories live in the same file. Nothing city-specific is hardcoded in a
-component. Update the employee register in `src/config/officials.ts` to match the new authority.
-
----
-
-## Sharing the project / secrets
-
-- The repository can be made **public safely**: `.env` here contains only the Supabase **URL,
-  project ref and the anon (publishable) key**. The anon key is designed to be shipped to the
-  browser — it is powerless on its own because every table is protected by Row Level Security.
-- The **service-role key is never in this repository** and must never be committed. It lives only
-  in the hosting platform's secret store.
-- Anyone you share the link with can `git clone`, run steps 1-4 above with **their own** Supabase
-  project, and have a working copy. Prefer that over sharing your database.
-- If you would rather not ship even the anon key, delete `.env` before publishing and let people
-  copy `.env.example` instead.
-
-### Does it have to be Supabase?
-
-Supabase is just hosted Postgres plus auth, storage and RLS. The app talks to it through
-`src/integrations/supabase/client.ts`, so a fully self-hosted deployment is possible with
-[supabase/self-hosted](https://supabase.com/docs/guides/self-hosting/docker) (Docker Compose:
-Postgres + PostgREST + GoTrue + Storage) — run the same migration file, point `.env` at
-`http://localhost:8000`, and nothing in the app changes. A bare local Postgres alone is *not*
-enough, because the client relies on the PostgREST HTTP API and the Storage API for photos.
-
----
-
-## Working with Git
-
+### 5. Type Checking
+Validate TypeScript types across the codebase:
 ```sh
-git clone <url>            # get the project
-git checkout -b my-feature # work on a branch
-git add -A && git commit -m "feat: describe the change"
-git pull --rebase origin main   # take other people's work first
-git push origin my-feature      # publish, then open a Pull Request
+npx tsc --noEmit
 ```
 
-Database changes are **code**: never click around in the Supabase dashboard and forget it.
-Add a new timestamped file under `supabase/migrations/`, commit it, and every collaborator gets
-the same schema by running it. `CHANGELOG.md` is updated with every change so project context is
-never lost.
+---
+
+## Production Deployment
+
+The project can be deployed on **Vercel** or any modern web hosting platform connected to the GitHub repository:
+
+1. Connect your repository ([`rohittenv-dev/CivicPulsee`](https://github.com/rohittenv-dev/CivicPulsee.git)) to Vercel.
+2. Set Environment Variables (`VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY`) in the Vercel project settings dashboard.
+3. Deploy directly from the `main` branch.
+
+---
+
+## Security Guidelines
+
+- Secret files containing private credentials or environment overrides — such as `.env`, `.env.local`, `rohit.env`, and `.env.production` — **must never be committed to Git**.
+- Ensure `.gitignore` includes all local environment and build artifacts before committing.
