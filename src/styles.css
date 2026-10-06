@@ -1,0 +1,358 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+@import "leaflet/dist/leaflet.css";
+@import "react-leaflet-cluster/dist/assets/MarkerCluster.css";
+@import "react-leaflet-cluster/dist/assets/MarkerCluster.Default.css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * CivicPulse design system.
+ *
+ * Voice: civic and trustworthy, but not a government form. Warm paper surfaces,
+ * deep ink-teal institutional primary, and a strict traffic-light status language
+ * (red pending / amber in progress / green resolved) reused in every view.
+ *
+ * All colors are oklch tokens. Never hardcode colors in components.
+ */
+
+@theme inline {
+  --font-display: "Archivo", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Public Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --radius-4xl: calc(var(--radius) + 16px);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-ring-offset-background: var(--background);
+
+  /* Status language — identical in badges, map pins, charts, timelines */
+  --color-pending: var(--pending);
+  --color-pending-foreground: var(--pending-foreground);
+  --color-pending-soft: var(--pending-soft);
+  --color-progress: var(--progress);
+  --color-progress-foreground: var(--progress-foreground);
+  --color-progress-soft: var(--progress-soft);
+  --color-resolved: var(--resolved);
+  --color-resolved-foreground: var(--resolved-foreground);
+  --color-resolved-soft: var(--resolved-soft);
+  --color-closed: var(--closed);
+  --color-closed-foreground: var(--closed-foreground);
+  --color-closed-soft: var(--closed-soft);
+  --color-alert: var(--alert);
+  --color-alert-foreground: var(--alert-foreground);
+  --color-alert-soft: var(--alert-soft);
+
+  --color-ink: var(--ink);
+  --color-paper: var(--paper);
+
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  --shadow-card: 0 1px 2px oklch(0.24 0.04 200 / 0.06), 0 8px 24px oklch(0.24 0.04 200 / 0.06);
+  --shadow-lift: 0 2px 4px oklch(0.24 0.04 200 / 0.08), 0 18px 48px oklch(0.24 0.04 200 / 0.12);
+  --shadow-inset-line: inset 0 -1px 0 var(--border);
+
+  --background-image-civic-grid: var(--gradient-civic-grid);
+  --background-image-ink-wash: var(--gradient-ink-wash);
+}
+
+:root {
+  --radius: 0.5rem;
+
+  --paper: oklch(0.985 0.008 90);
+  --ink: oklch(0.22 0.032 205);
+
+  --background: oklch(0.985 0.008 90);
+  --foreground: oklch(0.22 0.032 205);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.22 0.032 205);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.22 0.032 205);
+
+  --primary: oklch(0.42 0.078 203);
+  --primary-foreground: oklch(0.985 0.008 90);
+  --secondary: oklch(0.945 0.014 195);
+  --secondary-foreground: oklch(0.32 0.05 203);
+  --muted: oklch(0.955 0.01 100);
+  --muted-foreground: oklch(0.505 0.024 205);
+  --accent: oklch(0.93 0.05 85);
+  --accent-foreground: oklch(0.3 0.05 60);
+  --destructive: oklch(0.545 0.198 25);
+  --destructive-foreground: oklch(0.99 0.005 90);
+
+  --border: oklch(0.895 0.012 200);
+  --input: oklch(0.895 0.012 200);
+  --ring: oklch(0.42 0.078 203);
+
+  --pending: oklch(0.556 0.204 24);
+  --pending-foreground: oklch(0.99 0.005 90);
+  --pending-soft: oklch(0.948 0.036 26);
+  --progress: oklch(0.712 0.163 62);
+  --progress-foreground: oklch(0.26 0.06 60);
+  --progress-soft: oklch(0.958 0.052 78);
+  --resolved: oklch(0.522 0.126 152);
+  --resolved-foreground: oklch(0.99 0.005 90);
+  --resolved-soft: oklch(0.944 0.043 155);
+  --closed: oklch(0.47 0.026 205);
+  --closed-foreground: oklch(0.99 0.005 90);
+  --closed-soft: oklch(0.938 0.01 205);
+  --alert: oklch(0.478 0.176 320);
+  --alert-foreground: oklch(0.99 0.005 90);
+  --alert-soft: oklch(0.948 0.036 320);
+
+  --chart-1: oklch(0.42 0.078 203);
+  --chart-2: oklch(0.712 0.163 62);
+  --chart-3: oklch(0.522 0.126 152);
+  --chart-4: oklch(0.556 0.204 24);
+  --chart-5: oklch(0.6 0.09 250);
+
+  --sidebar: oklch(0.28 0.038 205);
+  --sidebar-foreground: oklch(0.93 0.012 200);
+  --sidebar-primary: oklch(0.712 0.163 62);
+  --sidebar-primary-foreground: oklch(0.24 0.04 60);
+  --sidebar-accent: oklch(0.34 0.04 205);
+  --sidebar-accent-foreground: oklch(0.97 0.008 90);
+  --sidebar-border: oklch(0.36 0.036 205);
+  --sidebar-ring: oklch(0.712 0.163 62);
+
+  --gradient-civic-grid: linear-gradient(
+      to right,
+      oklch(0.42 0.078 203 / 0.055) 1px,
+      transparent 1px
+    ),
+    linear-gradient(to bottom, oklch(0.42 0.078 203 / 0.055) 1px, transparent 1px);
+  --gradient-ink-wash: radial-gradient(
+      120% 90% at 12% 0%,
+      oklch(0.42 0.078 203 / 0.1) 0%,
+      transparent 60%
+    ),
+    radial-gradient(90% 80% at 100% 10%, oklch(0.712 0.163 62 / 0.14) 0%, transparent 55%);
+}
+
+.dark {
+  --paper: oklch(0.19 0.026 205);
+  --ink: oklch(0.96 0.008 90);
+
+  --background: oklch(0.19 0.026 205);
+  --foreground: oklch(0.96 0.008 90);
+  --card: oklch(0.235 0.03 205);
+  --card-foreground: oklch(0.96 0.008 90);
+  --popover: oklch(0.235 0.03 205);
+  --popover-foreground: oklch(0.96 0.008 90);
+
+  --primary: oklch(0.76 0.09 195);
+  --primary-foreground: oklch(0.2 0.03 205);
+  --secondary: oklch(0.3 0.034 205);
+  --secondary-foreground: oklch(0.95 0.01 90);
+  --muted: oklch(0.28 0.03 205);
+  --muted-foreground: oklch(0.72 0.02 200);
+  --accent: oklch(0.36 0.05 70);
+  --accent-foreground: oklch(0.96 0.01 90);
+  --destructive: oklch(0.63 0.19 25);
+  --destructive-foreground: oklch(0.98 0.005 90);
+
+  --border: oklch(1 0 0 / 12%);
+  --input: oklch(1 0 0 / 16%);
+  --ring: oklch(0.76 0.09 195);
+
+  --pending: oklch(0.64 0.196 25);
+  --pending-foreground: oklch(0.16 0.03 25);
+  --pending-soft: oklch(0.31 0.07 25);
+  --progress: oklch(0.78 0.15 70);
+  --progress-foreground: oklch(0.2 0.05 60);
+  --progress-soft: oklch(0.33 0.07 70);
+  --resolved: oklch(0.68 0.13 155);
+  --resolved-foreground: oklch(0.17 0.04 155);
+  --resolved-soft: oklch(0.31 0.07 155);
+  --closed: oklch(0.66 0.02 205);
+  --closed-foreground: oklch(0.18 0.03 205);
+  --closed-soft: oklch(0.3 0.02 205);
+  --alert: oklch(0.68 0.16 320);
+  --alert-foreground: oklch(0.18 0.05 320);
+  --alert-soft: oklch(0.31 0.07 320);
+
+  --chart-1: oklch(0.76 0.09 195);
+  --chart-2: oklch(0.78 0.15 70);
+  --chart-3: oklch(0.68 0.13 155);
+  --chart-4: oklch(0.64 0.196 25);
+  --chart-5: oklch(0.7 0.1 260);
+
+  --sidebar: oklch(0.16 0.024 205);
+  --sidebar-foreground: oklch(0.93 0.012 200);
+  --sidebar-primary: oklch(0.78 0.15 70);
+  --sidebar-primary-foreground: oklch(0.2 0.05 60);
+  --sidebar-accent: oklch(0.25 0.03 205);
+  --sidebar-accent-foreground: oklch(0.96 0.008 90);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.78 0.15 70);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    letter-spacing: -0.018em;
+  }
+}
+
+/* Tracking IDs and other machine-referenceable codes */
+@utility code-chip {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* Faint civic grid used behind hero and map surfaces */
+@utility civic-grid {
+  background-image: var(--gradient-civic-grid);
+  background-size: 32px 32px;
+}
+
+@utility ink-wash {
+  background-image: var(--gradient-ink-wash);
+}
+
+/* Section label used above headings across all three experiences */
+@utility eyebrow {
+  font-family: var(--font-display);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-muted-foreground);
+}
+
+@utility pulse-dot {
+  position: relative;
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 9999px;
+    background-color: currentColor;
+    opacity: 0.5;
+    animation: civic-pulse 2s ease-out infinite;
+  }
+}
+
+@keyframes civic-pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+  70%,
+  100% {
+    transform: scale(2.4);
+    opacity: 0;
+  }
+}
+
+/* ─── CivicPulse map — Leaflet popup overrides ─── */
+.civic-popup .leaflet-popup-content-wrapper {
+  background: var(--card);
+  color: var(--card-foreground);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-lift);
+  padding: 0;
+  overflow: hidden;
+}
+
+.civic-popup .leaflet-popup-content {
+  margin: 14px 14px 12px;
+}
+
+.civic-popup .leaflet-popup-tip-container {
+  display: none;
+}
+
+/* Remove default Leaflet popup close button */
+.civic-popup .leaflet-popup-close-button {
+  display: none;
+}
+
+/* Cluster canvas layer must sit above tiles but below UI */
+.leaflet-cluster-anim .leaflet-marker-icon,
+.leaflet-cluster-anim .leaflet-marker-shadow {
+  transition:
+    transform 0.3s ease-out,
+    opacity 0.3s ease-in-out;
+}
+
+/* Marker cluster group wrapper */
+.marker-cluster-group {
+  z-index: 600;
+}
+
+/* ─── Current User Location Marker ─── */
+@keyframes user-loc-pulse {
+  0% {
+    transform: scale(0.6);
+    opacity: 0.9;
+  }
+  70% {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+}
+
+.user-location-marker {
+  background: transparent !important;
+  border: none !important;
+}
